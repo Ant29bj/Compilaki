@@ -1,0 +1,8 @@
+hola
+paranga
+-1.6
+
+tirarCodigo(){
+  si
+  sino
+}
