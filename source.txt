@@ -1,8 +1,12 @@
-hola
-paranga
--1.6
+ent  num_ent;
+real num_real;
+car caracter;
+discreto dato_discreto;
 
-tirarCodigo(){
-  si
+tirarcodigo(){
+  imprimir("hola mundo");
+  si(z){
+      
+  }
   sino
 }

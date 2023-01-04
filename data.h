@@ -28,6 +28,12 @@ struct Nodo {
   struct Nodo *der;
 };
 
+struct Pila {
+  struct Nodo info;
+  struct Pila *izq;
+  struct Pila *der;
+};
+
 void buscar_palabra_reservada(char *c);
 
 void recorrer_nodo(struct Nodo *nodo);
@@ -35,5 +41,11 @@ void recorrer_nodo(struct Nodo *nodo);
 void insertar_numero(char *string);
 
 void insertar_caracter(char *string);
+
+void take_token(struct Nodo *nodo);
+
+void apilar(struct Nodo nodo);
+
+void recorrer_pila(struct Pila *pila);
 
 #endif // DATA_H_INCLUDED

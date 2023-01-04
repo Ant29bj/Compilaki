@@ -10,10 +10,6 @@ void identificadores(char c) {
   char cadena[100];
   memset(cadena, 0, sizeof(cadena) - 1);
   while (estado == 1 || estado == 2) {
-    if (iscntrl(c)) {
-      fila++;
-      columna = 0;
-    }
     switch (estado) {
     case 1:
       if (isalpha(c)) {
@@ -50,12 +46,7 @@ void numeros(char c) {
   int estado = 1;
   char numero[999];
   memset(numero, 0, sizeof(numero) - 1);
-
   while (estado < 6) {
-    if (iscntrl(c)) {
-      fila++;
-      columna = 0;
-    }
     switch (estado) {
     case 1:
       if (c == '-' || c == '.') {
@@ -100,7 +91,6 @@ void numeros(char c) {
         estado = 5;
       }
       if (!isdigit(c)) {
-        printf("Entre \n");
         estado = 5;
       }
       break;
@@ -126,7 +116,7 @@ void numeros(char c) {
   }
 
   if (isascii(c) && !isspace(c)) {
-    // caracterEspecial(c);
+    caracter_especial(c);
   }
 }
 
@@ -199,4 +189,232 @@ void caracter_especial(char c) {
       memset(operadores, 0, sizeof(operadores) - 1);
     }
   }
+}
+
+// --------------------------- Sintactico --------------------------
+extern struct Nodo *gnext;
+extern struct Nodo *empty;
+// Declaracion de Variables del tipo [tipo variable] <Nombre variable> ||
+// <Coma><Nombre Variable> || Terminal
+
+void declarar_variable(struct Nodo *nodo, int estado) {
+  if (nodo != NULL) {
+    switch (estado) {
+    case 0:
+      if (nodo->info.tipo == 1) {
+        declarar_variable(nodo->der, 1);
+      } else {
+        printf("error on fila %d", nodo->info.fila);
+        printf(" columna %d\n", nodo->info.columna);
+      }
+      break;
+    case 1:
+      if (nodo->info.lexema[0] == ';') {
+        gnext = empty;
+        gnext = nodo->der;
+      } else if (nodo->info.lexema[0] == ',') {
+        declarar_variable(nodo->der, 0);
+      } else {
+        printf("error on fila %d", nodo->info.fila);
+        printf(" columna %d\n", nodo->info.columna);
+      }
+      break;
+    default:
+      break;
+    }
+  }
+}
+// verificar trirarcodigo trirarcodigo(){}
+void verificar_main(struct Nodo *nodo, int estado) {
+  if (nodo != NULL) {
+    switch (estado) {
+    case 0:
+      if (!strcmp(nodo->info.lexema, "(")) {
+        verificar_main(nodo->der, 1);
+      } else {
+        printf("Error en fila %d ", nodo->info.fila);
+        printf("columna %d ", nodo->info.columna);
+        printf("en %s\n", nodo->info.lexema);
+        gnext = empty;
+        gnext = nodo->der;
+      }
+      break;
+    case 1:
+      if (!strcmp(nodo->info.lexema, ")")) {
+        verificar_main(nodo->der, 2);
+      } else {
+        printf("Error en fila %d ", nodo->info.fila);
+        printf("columna %d ", nodo->info.columna);
+        printf("en %s\n", nodo->info.lexema);
+        gnext = empty;
+        gnext = nodo->der;
+      }
+      break;
+    case 2:
+      if (!strcmp(nodo->info.lexema, "{")) {
+        apilar(*nodo);
+        gnext = empty;
+        gnext = nodo->der;
+      } else {
+        printf("Error en fila %d ", nodo->info.fila);
+        printf("columna %d ", nodo->info.columna);
+        printf("en %s\n", nodo->info.lexema);
+        gnext = empty;
+        gnext = nodo->der;
+      }
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+void imprimir(struct Nodo *nodo, int estado) {
+  if (nodo != NULL) {
+    switch (estado) {
+    case 0:
+      if (nodo->info.lexema[0] == '(') {
+        imprimir(nodo->der, 1);
+      } else {
+        printf("Error en fila %d ", nodo->info.fila);
+        printf("columna %d ", nodo->info.columna);
+        printf("en %s\n", nodo->info.lexema);
+        gnext = empty;
+        gnext = nodo->der;
+      }
+      break;
+    case 1:
+      if (nodo->info.tipo == 3) {
+        imprimir(nodo->der, 2);
+      } else {
+        printf("Error en fila %d ", nodo->info.fila);
+        printf("columna %d ", nodo->info.columna);
+        printf("en %s\n", nodo->info.lexema);
+        gnext = empty;
+        gnext = nodo->der;
+      }
+      break;
+    case 2:
+      if (nodo->info.lexema[0] == ')') {
+        imprimir(nodo->der, 3);
+      } else {
+        printf("Error en fila %d ", nodo->info.fila);
+        printf("columna %d ", nodo->info.columna);
+        printf("en %s\n", nodo->info.lexema);
+        gnext = empty;
+        gnext = nodo->der;
+      }
+      break;
+    case 3:
+      if (nodo->info.lexema[0] == ';') {
+        gnext = empty;
+        gnext = nodo->der;
+      } else {
+        printf("Error en fila %d ", nodo->info.fila);
+        printf("columna %d ", nodo->info.columna);
+        printf("en %s\n", nodo->info.lexema);
+        gnext = empty;
+        gnext = nodo->der;
+      }
+      break;
+    default:
+
+      break;
+    }
+  }
+}
+
+void si(struct Nodo *nodo, int estado) {
+  switch (estado) {
+  case 0:
+    if (!strcmp(nodo->info.lexema, "(")) {
+      si(nodo->der, 1);
+    } else {
+      printf("Error en fila %d ", nodo->info.fila);
+      printf("columna %d ", nodo->info.columna);
+      printf("en %s\n", nodo->info.lexema);
+      gnext = empty;
+      gnext = nodo->der;
+    }
+    break;
+  case 1:
+    if (verificar_expresion(nodo, 0)) {
+      si(nodo->der, 2);
+    } else {
+      printf("Error en fila %d", nodo->info.fila);
+      printf(" columna %d\n", nodo->info.columna);
+      gnext = empty;
+      gnext = nodo->der;
+    }
+    break;
+  case 2:
+    if (nodo->info.lexema[0] == ')') {
+      si(nodo->der, 3);
+    } else {
+      printf("este error\n");
+      printf("Error en fila %d", nodo->info.fila);
+      printf(" columna %d\n", nodo->info.columna);
+      gnext = empty;
+      gnext = nodo->der;
+    }
+    break;
+  case 3:
+    if (nodo->info.lexema[0] == '{') {
+      apilar(*nodo);
+      gnext = empty;
+      gnext = nodo->der;
+    } else {
+      printf("Error en fila %d", nodo->info.fila);
+      printf(" columna %d\n", nodo->info.columna);
+      gnext = empty;
+      gnext = nodo->der;
+    }
+    break;
+  }
+}
+
+int verificar_expresion(struct Nodo *nodo, int estado) {
+  int resultado;
+  switch (estado) {
+  case 0:
+    if (nodo->info.tipo == 1 || nodo->info.tipo == 2) {
+      verificar_expresion(nodo->der, 1);
+    } else {
+      resultado = 0;
+      printf("Error en fila %d", nodo->info.fila);
+      printf(" columna %d\n", nodo->info.columna);
+      gnext = empty;
+      gnext = nodo->der;
+    }
+    break;
+  case 1:
+    if (nodo->info.tipo == 5 && nodo->info.lexema[0] != ';') {
+      verificar_expresion(nodo->der, 2);
+    } else if (nodo->info.lexema[0] == ';') {
+      gnext = empty;
+      gnext = nodo;
+    } else {
+      resultado = 0;
+      printf("Error en fila %d", nodo->info.fila);
+      printf(" columna %d\n", nodo->info.columna);
+      gnext = empty;
+      gnext = nodo->der;
+    }
+    break;
+  case 2:
+    if (nodo->info.tipo == 1 || nodo->info.tipo == 2) {
+      gnext = empty;
+      gnext = nodo->der;
+      resultado = 1;
+    } else {
+      resultado = 0;
+      printf("Error en fila %d ", nodo->info.fila);
+      printf("columna %d ", nodo->info.columna);
+      printf("en %s\n", nodo->info.lexema);
+      gnext = empty;
+      gnext = nodo->der;
+    }
+    break;
+  }
+  return resultado;
 }
