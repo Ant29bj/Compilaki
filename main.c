@@ -18,6 +18,10 @@ int main() {
   }
   char character = fgetc(source);
   while (character != EOF) {
+    if (character == '\n') {
+      fila++;
+      columna = 0;
+    }
     if (isalpha(character)) {
       identificadores(character);
     } else if (isdigit(character) || character == '-' || character == '.') {

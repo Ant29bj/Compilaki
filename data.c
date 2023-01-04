@@ -66,9 +66,9 @@ void recorrer_pila(struct Pila *pila) {
 
 void recorrer_nodo(struct Nodo *nodo) {
   if (nodo != NULL) {
-    // printf("%s \t\t", nodo->info.lexema);
-    // printf(" %s \t\t", nodo->info.nombre);
-    // printf(" fila:%d\t, columna:%d\n", nodo->info.fila, nodo->info.columna);
+    printf("%s \t\t", nodo->info.lexema);
+    printf(" %s \t\t", nodo->info.nombre);
+    printf(" fila:%d\t, columna:%d\n", nodo->info.fila, nodo->info.columna);
     take_token(nodo);
     recorrer_nodo(nodo->der);
   }
@@ -137,6 +137,8 @@ void take_token(struct Nodo *nodo) {
     } else if (!strcasecmp(nodo->info.lexema, "si")) {
       si(nodo->der, 0);
     }
+  } else if (nodo->info.tipo == 1) {
+    ident_struct(nodo->der, 0);
   } else {
     gnext = empty;
     gnext = nodo->der;

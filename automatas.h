@@ -4,7 +4,6 @@
 #include "data.h"
 
 void identificadores(char c);
-
 void numeros(char c);
 
 void caracter_especial(char c);
@@ -18,5 +17,7 @@ int verificar_expresion(struct Nodo *nodo, int estado);
 void imprimir(struct Nodo *nodo, int estado);
 
 void si(struct Nodo *nodo, int estado);
+
+void ident_struct(struct Nodo *nodo, int estado);
 
 #endif

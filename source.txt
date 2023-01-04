@@ -5,8 +5,4 @@ discreto dato_discreto;
 
 tirarcodigo(){
   imprimir("hola mundo");
-  si(z){
-      
-  }
-  sino
 }
